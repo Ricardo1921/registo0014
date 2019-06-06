@@ -59,9 +59,11 @@ def alterar(v1, v2):
     ficheiro.commit()
     ficheiro.close()
 
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     erro = None
     if request.method == 'POST':

@@ -1,12 +1,9 @@
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-    <meta charset="UTF-8">
-    <title>Registo</title>
-    <link rel="stylesheet" href="static/style.css">
-</head>
-<body>
-<h1>Alterar a Password</h1>
+{% extends 'layout.html' %}
+
+{% block body %}
+
+
+<h2>Alterar a Palavra-Passe</h2>
 <fieldset>
     <legend>Introduza os seus dados</legend>
     <form method="post">
@@ -21,5 +18,4 @@
     </form>
 </fieldset>
 {% if erro %}<h1>{{ erro }}</h1>{% endif %}
-</body>
-</html>
+{% endblock %}
