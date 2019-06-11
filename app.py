@@ -23,7 +23,6 @@ def existe(v1):
     return valor
 
 
-
 def log(v1, v2):
     import sqlite3
     ficheiro = sqlite3.connect('db/Utilizadores.db')
@@ -59,9 +58,20 @@ def alterar(v1, v2):
     ficheiro.commit()
     ficheiro.close()
 
+
+def apaga(v1):
+    import sqlite3
+    ficheiro = sqlite3.connect('db/Utilizadores.db')
+    db = ficheiro.cursor()
+    db.execute("DELETE FROM usr WHERE nome = ?", (v1))
+    ficheiro.commit()
+    ficheiro.close()
+
+
 @app.route('/')
 def index():
     return render_template('index.html')
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -78,6 +88,21 @@ def login():
     return render_template('login.html', erro=erro)
 
 
+@app.route('/apagar', methods=['GET', 'POST'])
+def apagar():
+    erro = None
+    if request.method == 'POST':
+        v1 = request.form['utilizador']
+        v2 = request.form['passe']
+        if not existe(v1):
+            erro = 'O Utilizador não existe.'
+        elif not log(v1, v2):
+            erro = 'A palavra passe está errada.'
+        else:
+            apaga(v1)
+            erro = 'Conta Eliminada com Sucesso.'
+    return render_template('apagar.html', erro=erro)
+
 
 @app.route('/newpasse', methods=['GET', 'POST'])
 def newpasse():
@@ -93,8 +118,6 @@ def newpasse():
         else:
             alterar(v1, v2)
     return render_template('newpasse.html', erro=erro)
-
-
 
 
 if __name__ == '__main__':
