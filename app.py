@@ -5,10 +5,10 @@ app = Flask(__name__)
 
 
 def herokudb():
-    Host = 'ec2-79-125-64-18.eu-west-1.compute.amazonaws.com'
-    Database = 'd53ad6828ca36t'
-    User = 'lckwrmkrhuzybx'
-    Password = '742e8b3d51ffc4aa76058a8da51b9a20cda53e91b17fb0a0f5e0bead687692c4'
+    Host = 'ec2-54-75-235-28.eu-west-1.compute.amazonaws.com'
+    Database = 'd2i8vmdqr6hqck'
+    User = 'dlopinbemujdnz'
+    Password = 'c2f51674e9042bcd8985d5040cfe270542eec1ed42625e1e7fde56274000d210'
     return psycopg2.connect(host=Host, database=Database, user=User, password=Password, sslmode='require')
 
 
