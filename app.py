@@ -16,7 +16,7 @@ def gravar(v1, v2, v3):
     ficheiro = herokudb()
     db = ficheiro.cursor()
     db.execute("CREATE TABLE IF NOT EXISTS usr (nome text,email text, passe text)")
-    db.execute("INSERT INTO usr VALUES (%s, %s, %s)", (v1, v2, v3))
+    db.execute("INSERT INTO usr VALUES (%s, %s, %s)", (v1, v2, code(v3)))
     ficheiro.commit()
     ficheiro.close()
 
@@ -29,14 +29,14 @@ def existe(v1):
         valor = db.fetchone()
         ficheiro.close()
     except:
-        valor=None
+        valor = None
     return valor
 
 
 def log(v1, v2):
     ficheiro = herokudb()
     db = ficheiro.cursor()
-    db.execute("SELECT * FROM usr WHERE nome = %s and passe = %s", (v1, v2,))
+    db.execute("SELECT * FROM usr WHERE nome = %s and passe = %s", (v1, code(v2),))
     valor = db.fetchone()
     ficheiro.close()
     return valor
@@ -45,7 +45,7 @@ def log(v1, v2):
 def alterar(v1, v2):
     ficheiro = herokudb()
     db = ficheiro.cursor()
-    db.execute("UPDATE usr SET passe = %s WHERE nome = %s", (v2, v1))
+    db.execute("UPDATE usr SET passe = %s WHERE nome = %s", (code(v2), v1))
     ficheiro.commit()
     ficheiro.close()
 
@@ -56,6 +56,11 @@ def apaga(v1):
     db.execute("DELETE FROM usr WHERE nome = %s", (v1,))
     ficheiro.commit()
     ficheiro.close()
+
+
+def code(passe):
+    import hashlib
+    return hashlib.sha3_256(passe.encode()).hexdigest()
 
 
 @app.route('/registo', methods=['GET', 'POST'])
