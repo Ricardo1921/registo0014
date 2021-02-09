@@ -57,11 +57,28 @@ def apaga(v1):
     ficheiro.commit()
     ficheiro.close()
 
-
 def code(passe):
     import hashlib
     return hashlib.sha3_256(passe.encode()).hexdigest()
 
+
+
+
+def lista():
+    try:
+        ficheiro = herokudb()
+        db = ficheiro.cursor()
+        db.execute("select * from usr ORDER BY nome")
+        valor = db.fetchall()
+        ficheiro.close()
+    except:
+        valor = None
+    return valor
+
+@app.route('/tabela')
+def tabela():
+    dados = lista()
+    return render_template('tabela.html', tabela=dados, max=len(dados))
 
 @app.route('/registo', methods=['GET', 'POST'])
 def route():
