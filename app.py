@@ -3,11 +3,11 @@ from user import user
 
 
 app = Flask(__name__)
-db = user()
+user = user()
 
 @app.route('/tabela')
 def tabela():
-    dados = db.lista()
+    dados = user.lista()
     return render_template('tabela.html', tabela=dados, max=len(dados))
 
 @app.route('/registo', methods=['GET', 'POST'])
@@ -18,12 +18,12 @@ def route():
         v2 = request.form['email']
         v3 = request.form['passe']
         v4 = request.form['cpasse']
-        if db.existe(v1):
+        if user.existe(v1):
             erro = 'O Utilizador já existe.'
         elif v3 != v4:
             erro = 'A palavra passe não coincide.'
         else:
-            db.gravar(v1, v2, v3)
+            user.gravar(v1, v2, v3)
     return render_template('registo.html', erro=erro)
 
 
@@ -38,9 +38,9 @@ def login():
     if request.method == 'POST':
         v1 = request.form['utilizador']
         v2 = request.form['passe']
-        if not db.existe(v1):
+        if not user.existe(v1):
             erro = 'O Utilizador não existe.'
-        elif not db.log(v1, v2):
+        elif not user.log(v1, v2):
             erro = 'A palavra passe está errada.'
         else:
             erro = 'Bem-Vindo.'
@@ -53,12 +53,12 @@ def apagar():
     if request.method == 'POST':
         v1 = request.form['utilizador']
         v2 = request.form['passe']
-        if not db.existe(v1):
+        if not user.existe(v1):
             erro = 'O Utilizador não existe.'
-        elif not db.log(v1, v2):
+        elif not user.log(v1, v2):
             erro = 'A palavra passe está errada.'
         else:
-            db.apaga(v1)
+            user.apaga(v1)
             erro = 'Conta Eliminada com Sucesso.'
     return render_template('apagar.html', erro=erro)
 
@@ -71,14 +71,14 @@ def newpasse():
         v0 = request.form['apasse']
         v2 = request.form['passe']
         v3 = request.form['cpasse']
-        if not db.existe(v1):
+        if not user.existe(v1):
             erro = 'O Utilizador não existe.'
-        elif not db.log(v1, v0):
+        elif not user.log(v1, v0):
             erro = 'A palavra passe está errada.'
         elif v2 != v3:
             erro = 'A palavra passe não coincide.'
         else:
-            db.alterar(v1, v2)
+            user.alterar(v1, v2)
     return render_template('newpasse.html', erro=erro)
 
 
