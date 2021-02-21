@@ -22,10 +22,20 @@ class user:
         return psycopg2.connect(host=mydb.Host, database=mydb.Database, user=mydb.User, password=mydb.Password,
                                 sslmode='require')
 
+
+    def apagarusr(self):
+        ficheiro = self.herokudb()
+        db = ficheiro.cursor()
+        db.execute("drop table usr")
+        ficheiro.commit()
+        ficheiro.close()
+
+
+
+
     def gravar(self, login, email, password):
         ficheiro = self.herokudb()
         db = ficheiro.cursor()
-        #db.execute("drop table usr")
         db.execute(
             "CREATE TABLE IF NOT EXISTS usr (id serial primary key,login text,email text, password text, nif text, nome text, morada char(60))")
         db.execute("INSERT INTO usr VALUES (DEFAULT,%s, %s, %s)", (login, email, self.code(password),))
@@ -73,7 +83,7 @@ class user:
             valor = db.fetchall()
             ficheiro.close()
         except:
-            valor = None
+            valor = ""
         return valor
 
     @staticmethod
