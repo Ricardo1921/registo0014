@@ -1,20 +1,23 @@
 import psycopg2
 
 
-class user:
+class Artigos:
     db = 'db/Utilizadores.xlsx'
 
     def __init__(self):
         self.reset()
 
     def reset(self):
-        self.id = None
-        self.login = None
-        self.email = ''
-        self.password = ''
-        self.nif = ''
-        self.nome = ''
-        self.morada = ''
+        self.id = None  # Número do produto
+        self.category = None  # Categoria
+        self.brand = None  # Marca
+        self.description = None  # Descrição
+        self.price = None  # Preço
+        self.reference = None  # Referencia
+        self.ean = None  # European Article Number
+        self.stock = None  # Quantidade de artigos
+        self.created = None  # Data de criação
+        self.updated = None  # Data de alteração
 
     def herokudb(self):
         from db import Database
@@ -22,6 +25,15 @@ class user:
         return psycopg2.connect(host=mydb.Host, database=mydb.Database, user=mydb.User, password=mydb.Password,
                                 sslmode='require')
 
+    def inserirA(self, category, brand, description, price):
+        ficheiro = self.herokudb()
+        db = ficheiro.cursor()
+        db.execute("CREATE TABLE IF NOT EXISTS artigos "
+                   "(id serial primary key, category text, brand text, description text, price numeric,"
+                   "reference text, ean text, stock int, created date, updated date)")
+        db.execute("INSERT INTO artigos VALUES (DEFAULT,%s, %s, %s, %s)", (category, brand, description, price,))
+        ficheiro.commit()
+        ficheiro.close()
 
     def apagarusr(self):
         try:
@@ -33,18 +45,6 @@ class user:
         except:
             erro = "A tabela não existe"
         return erro
-
-
-
-
-    def gravar(self, login, email, password):
-        ficheiro = self.herokudb()
-        db = ficheiro.cursor()
-        db.execute("CREATE TABLE IF NOT EXISTS usr "
-                   "(id serial primary key,login text,email text, password text, nif text, nome text, morada text)")
-        db.execute("INSERT INTO usr VALUES (DEFAULT,%s, %s, %s)", (login, email, self.code(password),))
-        ficheiro.commit()
-        ficheiro.close()
 
     def existe(self, login):
         try:
