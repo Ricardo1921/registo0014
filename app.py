@@ -23,8 +23,13 @@ def inserirA():
 
 @app.route('/tabela')
 def tabela():
-    dados = user.lista()
-    return render_template('Utilizadores/tabela.html', tabela=dados, max=len(dados), user=user)
+    title = "Lista de Utilizadores"
+    return render_template('tabela.html',title=title,  tabela=user.lista, campos=user.campos, user=user)
+
+@app.route('/consultarA')
+def consultarA():
+    title = "Lista de Artigos"
+    return render_template('tabela.html',title=title,  tabela=art.lista, campos=art.campos, user=user)
 
 @app.route('/registo', methods=['GET', 'POST'])
 def route():
