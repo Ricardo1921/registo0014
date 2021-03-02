@@ -9,15 +9,47 @@ art = Artigos()
 
 @app.route('/inserirA', methods=['GET', 'POST'])
 def inserirA():
-    art.inserirA('Placa Gráfica', 'Asus', 'RTS 3000', 567.7)
+    erro = None
     if request.method == 'POST':
         v1 = request.form['category']
         v2 = request.form['brand']
         v3 = request.form['description']
         v4 = request.form['price']
         art.inserirA(v1, v2, v3, v4)
-    erro = "Artigo inserido com sucesso"
+        erro = "Artigo inserido com sucesso"
     return render_template('Artigos/inserirA.html', erro=erro, user=user, art=art)
+
+
+@app.route('/editarA', methods=['GET', 'POST'])
+def editarA():
+    erro = None
+    if request.method == 'POST':
+        if art.id:
+            if "cancel" in request.form:
+                art.reset()
+            elif "delete" in request.form:
+                art.apaga(art.id)
+                erro = "Artigo eliminado com sucesso"
+            elif "edit" in request.form:
+                v1 = request.form['price']
+                art.alterar(art.id, v1)
+                art.select(art.id) # Atualizar os dados na classe
+                erro = "Preço alterado com sucesso"
+        else:
+            v1 = request.form['id']
+            erro = art.select(v1)
+    return render_template('Artigos/editarA.html', erro=erro, user=user, art=art)
+
+
+
+
+@app.route('/eliminarA', methods=['GET', 'POST'])
+def eliminarA():
+    if request.method == 'POST':
+        v1 = request.form['id']
+        art.eliminarA(v1)
+    erro = 'Indique o id do Artigo a eliminar.'
+    return render_template('Artigos/editarA.html', erro=erro, user=user, art=art)
 
 
 
