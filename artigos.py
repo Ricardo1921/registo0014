@@ -20,12 +20,11 @@ class Artigos:
         self.updated = None  # Data de alteração
         ficheiro = self.herokudb()
         db = ficheiro.cursor()
-        db.execute("CREATE TABLE IF NOT EXISTS categorias (id serial primary key, category text)")
-        db.execute("CREATE TABLE IF NOT EXISTS marca (id serial primary key, brand text)")
-        db.execute("CREATE TABLE IF NOT EXISTS artigos (id serial primary key, category int, brand int,"
-                   "description text, price numeric, reference text, ean text, stock int, created date, updated date,"
-                   "CONSTRAINT fk_category foreign key (category) references categorias(id),"
-                   "CONSTRAINT fk_brand foreign key (brand) references marca(id))")
+        db.execute('CREATE TABLE IF NOT EXISTS categorias (id SERIAL PRIMARY KEY , category TEXT)')
+        db.execute('CREATE TABLE IF NOT EXISTS marcas (id SERIAL PRIMARY KEY , brand TEXT)')
+        db.execute("CREATE TABLE IF NOT EXISTS artigos (id SERIAL PRIMARY KEY , category INT, brand INT,"
+                   "description TEXT, price NUMERIC, reference TEXT, ean TEXT, stock INT, created DATE, updated DATE,"
+                   'FOREIGN KEY (category) REFERENCES categorias(id), FOREIGN KEY (brand) REFERENCES marcas(id))')
         ficheiro.commit()
         ficheiro.close()
 
@@ -120,7 +119,7 @@ class Artigos:
         try:
             ficheiro = self.herokudb()
             db = ficheiro.cursor()
-            db.execute("SELECT id FROM marcas WHERE brand =%s", (brand,))
+            db.execute("SELECT id FROM marcas WHERE brand = %s", (brand,))
             valor = db.fetchone()
             ficheiro.close()
         except:
@@ -150,17 +149,23 @@ class Artigos:
         ficheiro.close()
 
     @property
+    def campos(self):
+        return [('numero',), ('categoria',), ('marca',), ('descrição',), ('preço',)]
+
+    @property
     def lista(self):
         try:
             ficheiro = self.herokudb()
             db = ficheiro.cursor()
-            db.execute("select artigos.id, c.category, m.brand, description,"
-                       "price from artigos join categorias c on artigos.category = c.id join marcas m on artigos.brand = m.id")
+            db.execute('SET lc_monetary TO "pt_PT.utf8"')
+            db.execute("SELECT artigos.id, c.category, m.brand, description, price::MONEY FROM artigos "
+                       "JOIN categorias c ON artigos.category = c.id JOIN marcas m ON m.id = artigos.brand")
             valor = db.fetchall()
             ficheiro.close()
         except:
             valor = ""
         return valor
+
 
     @property
     def listaC(self):
@@ -184,19 +189,6 @@ class Artigos:
             ficheiro.close()
         except:
             valor = ""
-        return valor
-
-    @property
-    def campos(self):
-        try:
-            ficheiro = self.herokudb()
-            db = ficheiro.cursor()
-            db.execute("SELECT column_name FROM information_schema.columns WHERE table_name = 'artigos';")
-            valor = db.fetchall()
-            ficheiro.close()
-        except:
-            valor = ""
-        valor = [('numero',), ('categoria',), ('marca',), ('descriçao',), ('preço',)]
         return valor
 
     @staticmethod
